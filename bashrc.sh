@@ -11,12 +11,15 @@ function gpr() {
 function gfmt() {
 	local gitroot=$(git rev-parse --show-toplevel)
 	local lastcommittedgofiles=$(git diff --name-only HEAD~ HEAD)
-	local unformatted=$(gofmt -l $lastcommittedgofiles)
+	local cwd=$(pwd)
+	cd $gitroot
 
-	[ -z "$unformatted" ] && exit 0
+	local unformatted=$(gofmt -l $lastcommittedgofiles)
 
 	for fn in $unformatted; do
 		echo  formating $fn
 		gofmt -w $gitroot/$fn
 	done
+
+	cd $cwd
 }
